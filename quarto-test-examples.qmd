@@ -40,7 +40,7 @@ sw |> slice_max(order_by=Fertility, n=8) |>
   ggplot(aes(x=reorder(Prov, Fertility), y=Fertility))+geom_col()+
   coord_flip()+
   labs(title=ch_title, x="", y="")+
-  theme(axis.text.x = element_text(size=36),
+  theme(axis.text.x = element_text(size=36), # need to super size text for legibility
         axis.text.y = element_text(size=48)) # y axis is provinces in this case
 ```
 
