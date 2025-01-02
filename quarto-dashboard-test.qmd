@@ -1,0 +1,82 @@
+---
+title: "quarto dashboard example: swiss dataset"
+format: dashboard
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(scales)
+library(lubridate)
+library(here)
+library(PerformanceAnalytics)
+library(datasets)
+library(gt)
+
+theme_set(theme_light())
+sw <- datasets::swiss
+sw$Prov <- rownames(sw)
+```
+
+# Charts
+
+## Row
+
+The 'swiss' dataset that is an example dataset as part of base R has social data for 46 provinces of Switzerland in 1888.
+
+## Row
+
+### Column {width="70%"}
+
+```{r}
+#| title: Correlation - All Variables
+PerformanceAnalytics::chart.Correlation(sw[,1:6], histogram = TRUE)
+```
+
+### Column {width="30%"}
+
+```{r}
+#| title: Fertility Provinces
+#| fig-width: 20 # aim high - will set max and be responsive
+top <- 6
+ch_title <- paste0('top ',top,' fertility provinces')
+sw |> slice_max(order_by=Fertility, n=top) |> 
+  ggplot(aes(x=reorder(Prov, Fertility), y=Fertility))+geom_col()+
+  coord_flip()+
+  labs(title=ch_title, x="", y="")+
+  theme(axis.text.x = element_text(size=36), # need to super size text for legibility
+        axis.text.y = element_text(size=48), # y axis is provinces in this case
+  plot.title = element_text(size = 52, face = "bold", color = "black", hjust = 0.5)
+) 
+```
+
+```{r}
+#| title: Agriculture Provinces
+#| fig-width: 20
+top <- top
+ch_title <- paste0('top ', top, ' agriculture provinces')
+sw |> slice_max(order_by=Agriculture, n=top) |> ggplot(aes(x=reorder(Prov, Agriculture), y=Agriculture))+geom_col()+
+  coord_flip()+
+  labs(title=ch_title, x="", y="")+
+  theme(axis.text.x = element_text(size=36),
+        axis.text.y = element_text(size=48),
+        plot.title = element_text(size = 52, face = "bold", color = "black", hjust = 0.5))
+```
+
+```{r}
+#| title: Education Provinces
+#| fig-width: 20
+top <- top
+ch_title <- paste0('top ',top,' education provinces')
+sw |> slice_max(order_by=Education, n=top) |> ggplot(aes(x=reorder(Prov, Education), y=Education))+geom_col()+
+  coord_flip()+
+  labs(title=ch_title, x="", y="")+
+  theme(axis.text.x = element_text(size=36),
+        axis.text.y = element_text(size=48),
+        plot.title = element_text(size = 52, face = "bold", color = "black", hjust = 0.5))
+```
+
+# Tables
+
+```{r}
+sw |> gt()
+```
