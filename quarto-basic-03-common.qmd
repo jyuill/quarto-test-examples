@@ -1,0 +1,86 @@
+---
+title: "Quarto Example: YML features, Sourced setup"
+author: "JY"
+date: last-modified
+format: 
+  html:
+    theme: united
+    toc: true
+    code-fold: true
+    number-sections: true
+knitr:
+  opts_chunk:
+    fig-height: 4
+    fig-width: 6
+execute: 
+  echo: true
+  warning: false
+---
+
+```{r setup, include = FALSE}
+# reference file with common setup settings
+source('_common.R')
+```
+
+Basic Quarto doc with **added features** in yaml header AND:
+
+-   referencing setup options from a **\_common.R** file instead of placing in code chunk, making it easy to set settings in one place for reuse in multiple docs. #win!
+
+## Get Data
+
+### Swiss dataset
+
+```{r get_data}
+sw <- datasets::swiss
+sw$Prov <- rownames(sw)
+sw <- sw %>% select(Prov, c(1:ncol(sw)-1))
+```
+
+## Explore
+
+### Summaries
+
+```{r}
+str(sw)
+# glimpse(sw) # no clear advantage over str
+summary(sw)
+```
+
+### Correlations & Distribution
+
+```{r correlations}
+#| fig-height: 6
+#| fig-width: 8
+chart.Correlation(sw[,2:7], histogram = TRUE)
+```
+
+### In-depth Review
+
+#### skimr
+
+```{r skimr}
+skim(sw)
+```
+
+#### DataExplorer
+
+Not used - creates a separate, detailed html file that loads in browser
+
+```{r DataExplorer}
+# DataExplorer creates separate html doc and loads in browser - detailed exploration of data
+#create_report(sw)
+```
+
+#### summarytools
+
+```{r summarytools}
+dfSummary(sw, plain.ascii = TRUE, style = 'grid', tmp.img.dir = "/tmp")
+```
+
+### Boxplot summary
+
+```{r}
+# pivot sw to have all metrics in a metrics col and values in a values col
+sw_long <- sw %>% pivot_longer(cols = c(2:7), names_to = "metric", values_to = "value")
+sw_long %>% ggplot(aes(x=metric, y=value))+geom_boxplot()
+```

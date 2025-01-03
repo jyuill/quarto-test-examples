@@ -1,0 +1,93 @@
+---
+title: "Quarto Template: Basic EDA"
+author: "JY"
+date: last-modified
+format: 
+  html:
+    theme: united
+    toc: true
+    code-fold: true
+    number-sections: true
+knitr:
+  opts_chunk:
+    fig-height: 4
+    fig-width: 6
+execute: 
+  echo: true
+  warning: false
+---
+
+```{r setup, include = FALSE}
+# reference file with common setup settings
+source('_common.R')
+```
+
+## Intro
+
+\[a template for basic exploratory data analysis. use to get started and edit as necessary for purposes.\]
+
+::: callout-note
+\[Requires \_common.R file in same directory (or change source command)\]
+:::
+
+### Usage
+
+Source file is maintained in github repo at [github.com/jyuill/quarto-templates/basic-eda](https://github.com/jyuill/quarto-templates/tree/714824c70e4e29e329922f9e3a58815bbd0b1f03/basic-eda).
+
+To use in Quarto project, simply:
+
+1.  Terminal: **quarto use template jyuill/quarto-templates/basic-eda**
+2.  Automatically checks for github repo and copies files in directory
+3.  Will prompt for folder name \> renames the original template.qmd file with folder name
+4.  Edit and develop as needed, based on example content here
+
+## Get Data
+
+### \[EUStockMarkets\]
+
+\[built-in dataset EuStockMarkets to serve as example\]
+
+```{r get_data}
+data <- as.data.frame(datasets::EuStockMarkets) # time series convert to df
+data$date <- seq.Date(from=as.Date('1990-01-02'), by=1, length.out = nrow(data))
+data <- data %>% select(date, c(1:ncol(data)-1))
+```
+
+## Explore
+
+### Summaries
+
+```{r}
+str(data)
+summary(data)
+```
+
+### Correlations & Distribution
+
+```{r correlations}
+#| fig-height: 6
+#| fig-width: 8
+chart.Correlation(data[,2:ncol(data)], histogram = TRUE)
+```
+
+### In-depth Review
+
+#### skimr
+
+```{r skimr}
+skim(data)
+```
+
+### Boxplot summary
+
+```{r}
+# pivot sw to have all metrics in a metrics col and values in a values col
+data_long <- data %>% pivot_longer(cols = c(2:ncol(data)), names_to = "mkt", values_to = "price")
+data_long %>% ggplot(aes(x=price, y=mkt))+geom_boxplot()
+```
+
+### Trend
+
+```{r}
+data_long %>% ggplot(aes(x=date, y=price, color=mkt))+geom_line()
+```

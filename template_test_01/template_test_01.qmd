@@ -1,0 +1,89 @@
+---
+title: "Quarto Template"
+author: "JY"
+date: last-modified
+format: 
+  html:
+    theme: united
+    toc: true
+    code-fold: true
+    number-sections: true
+knitr:
+  opts_chunk:
+    fig-height: 4
+    fig-width: 6
+execute: 
+  echo: true
+  warning: false
+---
+
+```{r setup, include = FALSE}
+# reference file with common setup settings
+source('_common_ext.R')
+```
+
+## Intro
+
+-   this doc is created based on a the **template.qmd file + \_*common*\_ext.R** file from \_***extension*****\_01** folder. used as a starter template to be edited/built upon.
+-   created by running this in terminal:
+    -   <div>
+
+        > quarto use template \_*extensions*\_01
+
+        </div>
+-   this prompts you to specify the directory name, copies over the files in extensions_01, and renames template.qmd to name of directory.
+
+::: callout-note
+Can also run template from github repo: see template in template_test_github_01 folder.
+:::
+
+## Get Data
+
+### \[EUStockMarkets\]
+
+\[built-in dataset EuStockMarkets to serve as example\]
+
+```{r get_data}
+data <- as.data.frame(datasets::EuStockMarkets) # time series convert to df
+data$date <- seq.Date(from=as.Date('1990-01-02'), by=1, length.out = nrow(data))
+data <- data %>% select(date, c(1:ncol(data)-1))
+```
+
+## Explore
+
+### Summaries
+
+```{r}
+str(data)
+summary(data)
+```
+
+### Correlations & Distribution
+
+```{r correlations}
+#| fig-height: 6
+#| fig-width: 8
+chart.Correlation(data[,2:ncol(data)], histogram = TRUE)
+```
+
+### In-depth Review
+
+#### skimr
+
+```{r skimr}
+skim(data)
+```
+
+### Boxplot summary
+
+```{r}
+# pivot sw to have all metrics in a metrics col and values in a values col
+data_long <- data %>% pivot_longer(cols = c(2:ncol(data)), names_to = "mkt", values_to = "price")
+data_long %>% ggplot(aes(x=price, y=mkt))+geom_boxplot()
+```
+
+### Trend
+
+```{r}
+data_long %>% ggplot(aes(x=date, y=price, color=mkt))+geom_line()
+```

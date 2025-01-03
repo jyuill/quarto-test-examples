@@ -1,0 +1,60 @@
+---
+title: "Quarto Simple Example"
+author: "JY"
+format: html
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(scales)
+library(lubridate)
+library(here)
+library(PerformanceAnalytics)
+library(datasets)
+library(gt)
+library(DataExplorer) # results in separate html doc
+library(summarytools)
+# library(dlookr) # error: 'match_fonts' not exported by 'namespace:systemfonts'
+
+theme_set(theme_light())
+```
+
+Basic Quarto doc with little/no customizations.
+
+## Get Data
+
+### Swiss dataset
+
+```{r get_data}
+sw <- datasets::swiss
+sw$Prov <- rownames(sw)
+sw <- sw %>% select(Prov, c(1:ncol(sw)-1))
+```
+
+## Explore
+
+### Summaries
+
+```{r}
+head(sw)
+str(sw)
+# glimpse(sw) # no clear advantage over str
+summary(sw)
+```
+
+### Correlations & Distribution
+
+```{r correlations}
+chart.Correlation(sw[,2:7], histogram = TRUE)
+```
+
+```{r DataExplorer}
+# DataExplorer creates separate html doc and loads in browser - detailed exploration of data
+#create_report(sw)
+```
+
+### In-depth Review
+
+```{r summarytools}
+dfSummary(sw, plain.ascii = TRUE, style = 'grid', tmp.img.dir = "/tmp")
+```
