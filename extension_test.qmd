@@ -1,0 +1,7 @@
+---
+title: "Extension Test"
+format:
+  extension_02-html: default
+---
+
+## Heading 2
