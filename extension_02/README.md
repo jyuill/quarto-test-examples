@@ -1,14 +1,24 @@
-# <%= title %> Format
+# \<%= title %\> Format
 
-## Installing
+## Into: What is this?
 
-*TODO*: Replace the `<github-organization>` with your GitHub organization.
+Initial attempt at creating a quarto extension for reusable templates. More sophisticated approach than what is available in my 'quarto-templates' repo.
 
-```bash
-quarto use template <github-organization>/<%= filesafename %>
+## Installing template
+
+*TODO*: Replace the `<github-repo>` with your GitHub repo.
+
+``` bash
+quarto use template <github-repo>/<%= filesafename %>
 ```
 
 This will install the extension and create an example qmd file that you can use as a starting place for your article.
+
+## Installing Extension
+
+``` bash
+quarto add <github-repo>
+```
 
 ## Using
 
